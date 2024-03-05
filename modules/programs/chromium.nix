@@ -197,7 +197,7 @@ let
     in mkIf cfg.enable {
       programs."${browser}".finalPackage = package;
 
-      home.packages = [ cfg.finalPackage ];
+      home.packages = [ package ];
       home.file = optionalAttrs (!isProprietaryChrome) (listToAttrs
         ((map extensionJson cfg.extensions)
           ++ (map dictionary cfg.dictionaries)));
