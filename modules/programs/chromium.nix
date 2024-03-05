@@ -49,6 +49,15 @@ let
           [Chromium codesearch](https://source.chromium.org/search?q=file:switches.cc&ss=chromium%2Fchromium%2Fsrc).
         '';
       };
+
+      finalPackage = mkOption {
+        type = types.package;
+        visible = false;
+        readOnly = true;
+        description = ''
+          The chromium package including any overrides.
+        '';
+      };
     } // optionalAttrs (!isProprietaryChrome) {
       # Extensions do not work with Google Chrome
       # see https://github.com/nix-community/home-manager/issues/1383
@@ -186,7 +195,9 @@ let
         cfg.package;
 
     in mkIf cfg.enable {
-      home.packages = [ package ];
+      programs."${browser}".finalPackage = package;
+
+      home.packages = [ cfg.finalPackage ];
       home.file = optionalAttrs (!isProprietaryChrome) (listToAttrs
         ((map extensionJson cfg.extensions)
           ++ (map dictionary cfg.dictionaries)));
